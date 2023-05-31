@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import jp.co.aforce.beans.User;
 import jp.co.aforce.dao.UserDAO;
@@ -18,6 +19,8 @@ public class Register extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		PrintWriter out = response.getWriter();
+		
+		HttpSession session = request.getSession();
 		
 		try {
 			String error = "";
@@ -31,7 +34,7 @@ public class Register extends HttpServlet {
 			
 			int year = Integer.parseInt(request.getParameter("year"));
 			int month = Integer.parseInt(request.getParameter("month"));
-			int day = Integer.parseInt(request.getParameter("month"));
+			int day = Integer.parseInt(request.getParameter("day"));
 			String birthday = year + "-" + month + "-" + day;
 			
 			String email = request.getParameter("email");
@@ -62,27 +65,37 @@ public class Register extends HttpServlet {
 				user.setTel(tel);
 				int line = dao.insert(user);
 				if(line > 0) {
-					request.getRequestDispatcher("../jsp/success.jsp")
-						.forward(request, response);
+					session.removeAttribute("name");
+					session.removeAttribute("gender");
+					session.removeAttribute("year");
+					session.removeAttribute("month");
+					session.removeAttribute("day");
+					session.removeAttribute("email");
+					session.removeAttribute("email2");
+					session.removeAttribute("tel");
+					session.removeAttribute("registerid");
+					session.removeAttribute("password");
+					session.removeAttribute("password2");
+					session.removeAttribute("registererror");
+					response.sendRedirect("../jsp/success.jsp");
 				}else {
 					out.println("<p>追加に失敗しました</p>");
 					out.println("<p>最初からやり直してください</p>");
 				}
 			}else {
-				request.setAttribute("name", name);
-				request.setAttribute("gender", gender);
-				request.setAttribute("year", year);
-				request.setAttribute("month", month);
-				request.setAttribute("day", day);
-				request.setAttribute("email", email);
-				request.setAttribute("email2", email2);
-				request.setAttribute("tel", tel);
-				request.setAttribute("id", id);
-				request.setAttribute("password", password);
-				request.setAttribute("password2", password2);
-				request.setAttribute("error", error);
-				request.getRequestDispatcher("../jsp/register.jsp")
-					.forward(request, response);
+				session.setAttribute("name", name);
+				session.setAttribute("gender", gender);
+				session.setAttribute("year", year);
+				session.setAttribute("month", month);
+				session.setAttribute("day", day);
+				session.setAttribute("email", email);
+				session.setAttribute("email2", email2);
+				session.setAttribute("tel", tel);
+				session.setAttribute("registerid", id);
+				session.setAttribute("password", password);
+				session.setAttribute("password2", password2);
+				session.setAttribute("registererror", error);
+				response.sendRedirect("../jsp/register.jsp");
 			}
 		} catch (Exception e) {
 			e.printStackTrace(out);

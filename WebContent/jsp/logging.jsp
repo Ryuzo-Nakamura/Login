@@ -5,9 +5,9 @@
 
 <%@ page import="jp.co.aforce.beans.User" %>
 
-<% User user = (User)session.getAttribute("user"); %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<h1>ようこそ、<%=user.getName() %>さん！</h1>
+<h1>ようこそ、<c:if test="${user.getName() != null}">${user.getName()}</c:if>さん！</h1>
 
 <form action="../servlet/logout" method="post">
 	<input type="submit" value="ログアウト">

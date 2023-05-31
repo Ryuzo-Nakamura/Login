@@ -32,14 +32,12 @@ public class Login extends HttpServlet {
 			
 			if(password.equals(user.getPassword())) {
 				session.setAttribute("user", user);
-				request.getRequestDispatcher("../jsp/logging.jsp")
-					.forward(request, response);
+				response.sendRedirect("../jsp/logging.jsp");
 			}else {
 				String error = "IDもしくは、パスワードが違います。";
-				request.setAttribute("id", id);
-				request.setAttribute("error", error);
-				request.getRequestDispatcher("../jsp/login.jsp")
-					.forward(request, response);
+				session.setAttribute("loginid", id);
+				session.setAttribute("loginerror", error);
+				response.sendRedirect("../jsp/login.jsp");
 			}
 			
 		} catch (Exception e) {
